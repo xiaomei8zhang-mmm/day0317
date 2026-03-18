@@ -36,3 +36,23 @@ cd /Users/zhangxiaomei/zhangxiaomei_test
 - `POST /api/v1/schedule/events`
 - `POST /api/v1/voice/parse`
 - `POST /api/v1/voice/execute`
+
+## 云服务器生产部署（kidcarepro.com）
+
+已提供部署文件：
+- `backend/Dockerfile`
+- `frontend/Dockerfile`
+- `deploy/docker-compose.prod.yml`
+- `deploy/Caddyfile`
+- `scripts/deploy_prod_server.sh`
+
+服务器上执行：
+```bash
+cd /path/to/zhangxiaomei_test
+./scripts/deploy_prod_server.sh
+```
+
+部署前请确保：
+1. `kidcarepro.com` 与 `www.kidcarepro.com` 的 A 记录已指向服务器公网 IP
+2. 服务器已开放 `80/443` 端口
+3. 已安装 `docker` 与 `docker compose`

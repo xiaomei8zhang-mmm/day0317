@@ -1,0 +1,16 @@
+{
+  email admin@kidcarepro.com
+}
+
+kidcarepro.com, www.kidcarepro.com {
+  encode gzip zstd
+
+  @api path /api/*
+  handle @api {
+    reverse_proxy backend:3000
+  }
+
+  handle {
+    reverse_proxy frontend:80
+  }
+}

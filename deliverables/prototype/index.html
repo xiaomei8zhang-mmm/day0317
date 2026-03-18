@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>养娃管家 - 高保真原型</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --text: #1d2635;
+      --muted: #5f6c80;
+      --line: #dfe6f0;
+      --primary: #ff6a3d;
+      --primary-2: #ff9b42;
+      --accent: #26a69a;
+      --blue: #2f80ed;
+      --danger: #f04452;
+      --radius: 18px;
+      --shadow: 0 16px 34px rgba(32, 56, 94, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 106, 61, 0.18), transparent 36%),
+        radial-gradient(circle at 84% 88%, rgba(38, 166, 154, 0.22), transparent 30%),
+        linear-gradient(155deg, #eef3fa, #f8fbff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 26px;
+    }
+
+    .workspace {
+      width: min(1280px, 100%);
+      display: grid;
+      gap: 22px;
+      grid-template-columns: 360px 1fr;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .left {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.5px;
+    }
+
+    .sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .nav {
+      display: grid;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .nav button {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      color: var(--text);
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 180ms ease;
+    }
+
+    .nav button:hover { transform: translateY(-1px); border-color: #bec9d9; }
+
+    .nav button.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 8px 16px rgba(255, 107, 61, 0.3);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #edf5ff;
+      color: #2a5a9e;
+    }
+
+    .voice-card {
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px dashed #c5d2e4;
+      background: #f9fbff;
+    }
+
+    .voice-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px;
+      background: linear-gradient(120deg, #2f80ed, #26a69a);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .right { padding: 18px; }
+
+    .phone {
+      width: min(430px, 100%);
+      height: 860px;
+      margin: 0 auto;
+      border-radius: 34px;
+      background: #fff;
+      border: 10px solid #151a23;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 28px 48px rgba(22, 33, 54, 0.25);
+    }
+
+    .notch {
+      width: 160px;
+      height: 22px;
+      border-radius: 0 0 16px 16px;
+      background: #151a23;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+      z-index: 10;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      padding: 32px 16px 88px;
+      background:
+        linear-gradient(180deg, #fff 0%, #f6f9ff 100%);
+      overflow-y: auto;
+      display: none;
+    }
+
+    .screen.active { display: block; animation: fadeIn 280ms ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .top h2 { margin: 0; font-size: 20px; }
+
+    .chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #4f5c71;
+      background: #edf2f9;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 18px rgba(50, 72, 110, 0.08);
+    }
+
+    .hero {
+      background: linear-gradient(145deg, #ff7a4f, #ff9962);
+      color: #fff;
+      border: 0;
+    }
+
+    .row { display: flex; gap: 10px; }
+    .col { flex: 1; }
+
+    .metric { font-size: 24px; font-weight: 700; }
+    .muted { color: var(--muted); font-size: 12px; }
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px dashed #dce4f0;
+      font-size: 13px;
+    }
+
+    .list-item:last-child { border-bottom: 0; }
+
+    .pill {
+      background: #eaf7f5;
+      color: #1c786f;
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 3px 8px;
+    }
+
+    .danger { color: var(--danger); font-weight: 600; }
+
+    .bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #e9eef6;
+      overflow: hidden;
+    }
+
+    .bar > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2f80ed, #26a69a);
+    }
+
+    .tabs {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.98);
+      border-top: 1px solid #d9e2f1;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 4px 10px;
+      font-size: 11px;
+      color: #5f6c80;
+    }
+
+    .tabs span.active { color: var(--primary); font-weight: 700; }
+
+    .voice-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(16, 25, 41, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 40;
+    }
+
+    .voice-overlay.show { display: flex; }
+
+    .voice-modal {
+      width: min(520px, 100%);
+      background: #fff;
+      border-radius: 20px;
+      padding: 18px;
+      border: 1px solid #dbe4f2;
+      box-shadow: var(--shadow);
+    }
+
+    .voice-actions { display: flex; gap: 10px; margin-top: 12px; }
+
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn.primary { background: var(--blue); color: #fff; }
+    .btn.ghost { background: #edf2f8; color: #2d3b52; }
+
+    @media (max-width: 980px) {
+      .workspace { grid-template-columns: 1fr; }
+      .phone { height: 820px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="workspace">
+    <section class="panel left">
+      <h1>养娃管家</h1>
+      <p class="sub">高保真交互原型（V1.0）<br>覆盖：首页、吃法、推荐、日程、健康、花销、语音控制与学校推荐。</p>
+      <span class="badge">孩子：2岁4个月 · 北京朝阳</span>
+
+      <div class="nav" id="screenNav">
+        <button class="active" data-screen="home">首页看板</button>
+        <button data-screen="food">分龄吃法</button>
+        <button data-screen="recommend">附近推荐（玩乐/学校）</button>
+        <button data-screen="schedule">日程提醒</button>
+        <button data-screen="health">健康管理</button>
+        <button data-screen="expense">花销报表</button>
+      </div>
+
+      <div class="voice-card">
+        <strong style="font-size:14px;">语音控制演示</strong>
+        <p class="sub" style="margin-top:6px;">支持查询：衣物品牌、附近学校、今日美食、本月花销；支持操作：新增记账、新增提醒。</p>
+        <button class="voice-btn" id="openVoice">按住说话（原型）</button>
+      </div>
+    </section>
+
+    <section class="panel right">
+      <div class="phone">
+        <div class="notch"></div>
+
+        <article class="screen active" id="screen-home">
+          <div class="top"><h2>今日看板</h2><span class="chip">周日 3/15</span></div>
+
+          <div class="card hero">
+            <div class="row">
+              <div class="col"><div style="font-size:13px;opacity:.92;">北京 · 晴</div><div class="metric">11°C</div><div style="font-size:12px;opacity:.9;">体感 9°C · 西北风</div></div>
+              <div class="col" style="text-align:right;"><div style="font-size:13px;opacity:.92;">今日穿搭</div><div style="font-size:16px;font-weight:700;">巴拉巴拉</div><div style="font-size:12px;opacity:.92;">内搭+针织+防风外套</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <strong>今日吃法（1-3岁）</strong>
+            <div class="list-item"><span>早餐：南瓜小米粥 + 蒸蛋</span><span class="pill">易消化</span></div>
+            <div class="list-item"><span>午餐：番茄牛肉面 + 西兰花</span><span class="pill">高铁</span></div>
+            <div class="list-item"><span>晚餐：三文鱼粥 + 胡萝卜泥</span><span class="pill">DHA</span></div>
+          </div>
+
+          <div class="row">
+            <div class="card col">
+              <strong>近期提醒</strong>
+              <div class="list-item"><span>儿保复查</span><span class="danger">2天后</span></div>
+              <div class="list-item"><span>乙肝疫苗</span><span>7天后</span></div>
+            </div>
+            <div class="card col">
+              <strong>本月花销</strong>
+              <div class="metric" style="font-size:22px; margin-top:8px;">¥ 4,865</div>
+              <div class="muted">预算 ¥ 5,500</div>
+              <div class="bar" style="margin-top:8px;"><span style="width:88%;"></span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <strong>附近推荐</strong>
+            <div class="list-item"><span>朝阳公园亲子区（2.1km）</span><span class="pill">晴天优先</span></div>
+            <div class="list-item"><span>星童探索馆（室内 3.4km）</span><span class="pill">雨天备选</span></div>
+            <div class="list-item"><span>京华幼儿园（3-6岁）</span><span class="pill">学校</span></div>
+          </div>
+        </article>
+
+        <article class="screen" id="screen-food">
+          <div class="top"><h2>分龄吃法</h2><span class="chip">2岁4个月</span></div>
+          <div class="card">
+            <strong>营养目标</strong>
+            <p class="muted">蛋白质 36g · 蔬果 300g · 饮水 1200ml</p>
+            <div class="list-item"><span>过敏原避让：花生</span><span class="danger">已开启</span></div>
+          </div>
+          <div class="card">
+            <strong>早餐推荐</strong>
+            <div class="list-item"><span>山药鸡肉粥</span><span>替代：鳕鱼粥</span></div>
+            <div class="list-item"><span>蓝莓酸奶碗</span><span>替代：香蕉奶昔</span></div>
+          </div>
+          <div class="card">
+            <strong>加餐建议</strong>
+            <div class="list-item"><span>水果丁 + 原味奶酪</span><span class="pill">低糖</span></div>
+            <div class="list-item"><span>核桃（已磨粉）</span><span class="pill">DHA</span></div>
+          </div>
+        </article>
+
+        <article class="screen" id="screen-recommend">
+          <div class="top"><h2>附近推荐</h2><span class="chip">天气联动</span></div>
+          <div class="card">
+            <strong>筛选条件</strong>
+            <p class="muted">范围 5km · 预算 ¥200 内 · 时长半天 · 年龄 2-3岁</p>
+          </div>
+          <div class="card">
+            <strong>亲子玩乐</strong>
+            <div class="list-item"><span>泡泡森林乐园（室内）</span><span>3.2km</span></div>
+            <div class="list-item"><span>奥森南园亲子跑道（户外）</span><span>4.8km</span></div>
+            <div class="list-item"><span>儿童博物馆（室内）</span><span>5.0km</span></div>
+          </div>
+          <div class="card">
+            <strong>学校推荐（分阶段）</strong>
+            <div class="list-item"><span>星芽托育中心（0-3）</span><span>¥2800/月</span></div>
+            <div class="list-item"><span>京华幼儿园（3-6）</span><span>¥1800/月</span></div>
+            <div class="list-item"><span>朝阳实验小学（6-12）</span><span>2.4km</span></div>
+          </div>
+        </article>
+
+        <article class="screen" id="screen-schedule">
+          <div class="top"><h2>日程提醒</h2><span class="chip">模板模式</span></div>
+          <div class="card">
+            <strong>关键节点</strong>
+            <div class="list-item"><span>儿保：2026-03-17 10:00</span><span class="danger">即将到期</span></div>
+            <div class="list-item"><span>疫苗：2026-03-22 09:30</span><span>提前7天提醒</span></div>
+            <div class="list-item"><span>幼儿园开放日：2026-04-02</span><span>已订阅</span></div>
+          </div>
+          <div class="card">
+            <strong>提醒策略</strong>
+            <p class="muted">默认：提前7天 / 3天 / 1天 / 当天。支持微信订阅消息。</p>
+          </div>
+        </article>
+
+        <article class="screen" id="screen-health">
+          <div class="top"><h2>健康管理</h2><span class="chip">趋势追踪</span></div>
+          <div class="card">
+            <strong>成长曲线</strong>
+            <p class="muted">体重 13.4kg（本月 +0.2） · 身高 90.1cm（本月 +0.8）</p>
+            <div class="bar"><span style="width:72%; background:linear-gradient(90deg,#26a69a,#66d2c8);"></span></div>
+          </div>
+          <div class="card">
+            <strong>近7天记录</strong>
+            <div class="list-item"><span>睡眠均值</span><span>10.1h</span></div>
+            <div class="list-item"><span>体温异常</span><span>0次</span></div>
+            <div class="list-item"><span>用药记录</span><span>1次</span></div>
+          </div>
+        </article>
+
+        <article class="screen" id="screen-expense">
+          <div class="top"><h2>花销报表</h2><span class="chip">截至今日</span></div>
+          <div class="card hero" style="background:linear-gradient(145deg,#2f80ed,#57a1ff);">
+            <div class="muted" style="color:#eaf1ff;">本月累计花销</div>
+            <div class="metric">¥ 4,865</div>
+            <div style="font-size:12px;opacity:.92;">较上月 +12%</div>
+          </div>
+          <div class="card">
+            <strong>分类占比</strong>
+            <div class="list-item"><span>奶粉/辅食</span><span>34%</span></div>
+            <div class="list-item"><span>医疗健康</span><span>21%</span></div>
+            <div class="list-item"><span>教育早教</span><span>18%</span></div>
+            <div class="list-item"><span>衣物穿搭</span><span>15%</span></div>
+          </div>
+          <div class="card">
+            <strong>语音快捷</strong>
+            <p class="muted">可说：“这个月到目前花了多少钱？” “记一笔尿不湿89元”</p>
+          </div>
+        </article>
+
+        <div class="tabs">
+          <span class="active">首页</span><span>吃法</span><span>推荐</span><span>日程</span><span>健康</span><span>花销</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="voice-overlay" id="voiceOverlay">
+    <div class="voice-modal">
+      <h3 style="margin:0 0 8px;">语音助手</h3>
+      <p class="muted" style="margin:0 0 10px;">识别结果：这个月到目前花了多少钱？</p>
+      <div class="card" style="margin:0;">
+        <div class="list-item"><span>意图识别</span><span class="pill">query_expense_total</span></div>
+        <div class="list-item"><span>执行结果</span><span><strong>¥ 4,865</strong></span></div>
+      </div>
+      <div class="voice-actions">
+        <button class="btn primary" id="switchExpense">查看花销页</button>
+        <button class="btn ghost" id="closeVoice">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('#screenNav button');
+    const screens = document.querySelectorAll('.screen');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const key = btn.dataset.screen;
+        screens.forEach(s => s.classList.remove('active'));
+        document.getElementById(`screen-${key}`).classList.add('active');
+      });
+    });
+
+    const voiceOverlay = document.getElementById('voiceOverlay');
+    document.getElementById('openVoice').addEventListener('click', () => {
+      voiceOverlay.classList.add('show');
+    });
+    document.getElementById('closeVoice').addEventListener('click', () => {
+      voiceOverlay.classList.remove('show');
+    });
+
+    document.getElementById('switchExpense').addEventListener('click', () => {
+      voiceOverlay.classList.remove('show');
+      buttons.forEach(b => b.classList.remove('active'));
+      const target = [...buttons].find(b => b.dataset.screen === 'expense');
+      target.classList.add('active');
+      screens.forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-expense').classList.add('active');
+    });
+  </script>
+</body>
+</html>
